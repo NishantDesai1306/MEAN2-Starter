@@ -9,6 +9,10 @@ MEAN2 Starter is an MEAN2 stack based project for giving a kickstart to your new
 
 ---
 
+This project implements a simple login system and this project is intentionally kept simple so that other developers dont have to spend hours just to integrate this boilerplate project. 
+
+---
+
 Setup this project
 
 1. `git clone https://github.com/NishantDesai1306/MEAN2-Starter.git`

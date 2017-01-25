@@ -1,0 +1,34 @@
+<div class="row margin-top-50">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4 container panel panel-default">
+        <div class="panel-body">
+            <div class="center-align">
+                <h2>Login</h2>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input name="email" [(ngModel)]="user.email" type="email" class="form-control" id="email" placeholder="Email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input name="password" [(ngModel)]="user.password" type="password" class="form-control" id="password" placeholder="Password">
+            </div>
+
+            <div *ngIf="error" class="alert alert-danger align-center">
+                <span>{{error}}</span>
+            </div>
+
+            <div class="row padding-bottom-10">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary btn-lg btn-block" (click)="login()">Login</button>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-default btn-lg btn-block" routerLink="/register">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+</div>
