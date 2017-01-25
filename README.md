@@ -19,7 +19,7 @@ Setup this project
 2. Open terminal and navgate to `mean2-starter` directory
 3. Execute `npm install` to install all npm dependencies for development
 4. To start the project execute `npm run start`
-5. Open localhost:3000
+5. Open [localhost:3000](https://localhost:3000)
 
 ![ ](https://github.com/NishantDesai1306/MEAN2-Starter/blob/master/image/demo.png)
 
