@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -r dist && webpack --progress",
-    "build:prod": "rm -r dist && webpack -p --progress",
-    "serve": "webpack-dev-server --inline --progress",
+    "start": "gulp",
     "postinstall": "typings install"
   },
   "keywords": [],
