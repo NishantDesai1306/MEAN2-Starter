@@ -1,0 +1,34 @@
+<div class="row margin-top-50">
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4 container panel panel-default">
+        <div class="panel-body">
+            <div class="center-align">
+                <h2><span class="glyphicon glyphicon-user"></span> User Details</h2>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Userame</label>
+                <input name="name" [(ngModel)]="user.username" type="name" class="form-control" id="name" placeholder="Username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input name="email" [(ngModel)]="user.email" type="email" class="form-control" id="email" placeholder="Email" required>
+            </div>
+            
+            <div *ngIf="error" class="alert alert-danger align-center">
+                <span>{{error}}</span>
+            </div>
+
+            <div class="row padding-bottom-10">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary btn-lg btn-block" (click)="saveChanges()">Save Changes</button>
+                </div>
+                <div class="col-sm-6">
+                    <a class="btn btn-danger btn-lg btn-block" [routerLink]="['/dashboard/change-password']">Change Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+</div>

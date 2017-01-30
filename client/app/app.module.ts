@@ -1,10 +1,16 @@
+import { ChangePasswordComponent } from './dashboard/change-password/change-password.component';
+import { FormsModule } from '@angular/forms';
+import { UserComponent } from './dashboard/user/user.component';
+import { MainComponent } from './dashboard/main/main.component';
 import { DashboardCanActivateGuard } from './app.guards';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from './shared/shared.module';
-import { NgModule }      from '@angular/core';
+import { NgModule, OpaqueToken }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
+import { DropdownModule } from 'ng2-bootstrap';
+import { AppConfig } from './app-config';
 
 import { LoginModule } from './login/login.module';
 
@@ -19,14 +25,22 @@ import { HomeComponent } from './home/home.component';
     HttpModule,
     RouterModule,
     LoginModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    DropdownModule.forRoot()
   ],
   declarations: [ 
     AppComponent,
     HomeComponent,
-    DashboardComponent
+    DashboardComponent,
+    MainComponent,
+    UserComponent,
+    ChangePasswordComponent
   ],
-  providers: [DashboardCanActivateGuard],
+  providers: [
+    DashboardCanActivateGuard,
+    AppConfig
+  ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

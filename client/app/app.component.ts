@@ -10,15 +10,8 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
 
     username: string;
-    userService: UserService;
-    authService: AuthSerivce;
-    router: Router;
-
-    constructor(userService: UserService, authService: AuthSerivce, router: Router) {
-        this.userService = userService;
-        this.authService = authService;
-        this.router = router;
-
+    
+    constructor(private userService: UserService, private authService: AuthSerivce, private router: Router) {
         this.username = '';
     }
 

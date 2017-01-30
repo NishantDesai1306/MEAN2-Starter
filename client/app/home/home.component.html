@@ -4,7 +4,7 @@
     <div class="row margin-top-50">
         <div class="col-sm-3"></div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-6" *ngIf="!isUserLoggedIn">
             <button routerLink="/login" class="btn btn-primary btn-lg btn-block">Login</button>
         </div>
 

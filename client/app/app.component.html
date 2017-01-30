@@ -1,11 +1,20 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Angular2 Started</a>
+            <a class="navbar-brand" [routerLink]="['/home']">Angular2 Started</a>
         </div>
         <ul class="nav navbar-nav navbar-right" *ngIf="username">
-            <li><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp; Welcome, {{username}}</a></li>
-            <li><a (click)="logout()" href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a [routerLink]="['/dashboard']">Dashboard</a></li>
+            <li dropdown>
+                <a class="cursor-pointer" id="user-menu" dropdownToggle>
+                    <span class="glyphicon glyphicon-user"></span>&nbsp; Welcome, {{username}}
+                    <span class="caret"></span>
+                </a>
+                <ul dropdownMenu role="menu" aria-labelledby="user-menu">
+                    <li role="menuitem" [routerLink]="['/dashboard/user']"> <a class="cursor-pointer dropdown-item">User Details</a></li>
+                    <li role="menuitem" (click)="logout()"> <a class="cursor-pointer dropdown-item">Logout</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </nav>

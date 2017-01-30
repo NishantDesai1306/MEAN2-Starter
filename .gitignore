@@ -1,5 +1,5 @@
 .vscode/
-db/
+data/
 dist/
 node_modules/
 typings/

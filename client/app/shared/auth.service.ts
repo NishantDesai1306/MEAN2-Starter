@@ -1,3 +1,5 @@
+import { CookieService } from 'angular2-cookie';
+import { AppConfig } from './../app-config';
 import { UserService } from './user.service';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
@@ -15,13 +17,16 @@ export class AuthSerivce {
     readonly authUrl: string = '/auth';
     private isLoggedIn: boolean = false;
     
-    constructor(private http: Http, private userService: UserService) {}
+    constructor(private http: Http, 
+        private userService: UserService, 
+        private cookieService: CookieService,
+        private appConfig: AppConfig) {}
 
     isUserLoggedIn(): boolean {
         return this.isLoggedIn;
     }
 
-    login (email: string, password: string) {
+    login (email: string, password: string, rememberMe: boolean) {
         let self = this;
         let loginUrl: string = this.authUrl + '/login';
 
@@ -31,6 +36,11 @@ export class AuthSerivce {
                 self.isLoggedIn = res.status;
                 if(self.isLoggedIn) {
                     self.userService.setUser(res.username, res.email)
+                }
+                if(rememberMe) {
+                    self.cookieService.put(self.appConfig.COOKIE_KEY, "user-logged-in", {
+                        expires: new Date(Date.now() + self.appConfig.COOKIE_TTL)
+                    });
                 }
                 return self.isLoggedIn;
             })
@@ -62,10 +72,28 @@ export class AuthSerivce {
             .map((res) => {
                 if(res.status) {
                     self.isLoggedIn = false;
-                    self.userService.setUser(res.username, res.email)
+                    self.userService.setUser(res.username, res.email);
+                    self.cookieService.remove(self.appConfig.COOKIE_KEY);
                 }
                 
                 return res;
+            })
+            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    getUserDetails() {
+        let self = this;
+        let getUserUrl: string = '/api/user/details';
+
+        return self.http.get(getUserUrl)
+            .map((res:Response) => res.json())
+            .map((res) => {
+                if(res.status) {
+                    self.isLoggedIn = true;
+                    self.userService.setUser(res.username, res.email);
+                }
+                
+                return res.status;
             })
             .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
     }

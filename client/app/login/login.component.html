@@ -16,6 +16,10 @@
                 <input name="password" [(ngModel)]="user.password" type="password" class="form-control" id="password" placeholder="Password">
             </div>
 
+            <div class="checkbox">
+                <label><input type="checkbox" [(ngModel)]="rememberMe"><b>Remember Me</b></label>
+            </div>
+
             <div *ngIf="error" class="alert alert-danger align-center">
                 <span>{{error}}</span>
             </div>

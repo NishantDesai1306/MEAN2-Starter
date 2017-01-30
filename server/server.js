@@ -22,7 +22,7 @@ var port = process.env.PORT || 3000;
 // (uncomment after you enter in your own credentials in config/db.js)
 // mongoose.connect(db.url); 
 
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
@@ -41,8 +41,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRouter);
-app.use('/api', apiRouter);
+app.use('/auth', authRouter.router);
+app.use('/api', authRouter.isAuthenticated, apiRouter);
 app.get('*', function(req, res, next) {
     res.sendFile(path.resolve('./dist/index.html'));
 });
