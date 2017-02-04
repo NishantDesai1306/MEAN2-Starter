@@ -4,8 +4,11 @@ var authController = require('../../auth/auth.controller');
 exports.fetchUser = function(req, res) {
     res.json({
         status: true,
-        username: req.user.username,
-        email: req.user.email
+        data: {
+            username: req.user.username,
+            email: req.user.email,
+            profilePicture: req.user.profilePicture.path
+        }
     });
 };
 
@@ -32,6 +35,21 @@ exports.changePassword = function(req, res) {
         .then(function() {
             res.json({
                 status: true
+            });
+        }, function(err) {
+            res.json({
+                status: false,
+                reason: err.toString()
+            });
+        });
+};
+
+exports.changeProfilePicture = function(req, res) {
+    User.changeProfilePicture(req.user, req.body.profilePicture)
+        .then(function(newUrl) {
+            res.json({
+                status: true,
+                profilePictureUrl: newUrl
             });
         }, function(err) {
             res.json({

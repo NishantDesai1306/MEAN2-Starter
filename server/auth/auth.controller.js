@@ -5,16 +5,22 @@ var User = require('../api/user/user.model');
 exports.successLogin = function(req, res) {
     res.json({ 
         status: true,
-        username: req.user.username,
-        email: req.user.email
+        data: {
+            username: req.user.username,
+            email: req.user.email,
+            profilePicture: req.user.profilePicture.path
+        }
     });
 };
 
 exports.successRegister = function(req, res) {
     res.json({ 
         status: true,
-        username: req.user.username,
-        email: req.user.email
+        data: {
+            username: req.user.username,
+            email: req.user.email,
+            profilePicture: req.user.profilePicture.path
+        }
     });
 };
 

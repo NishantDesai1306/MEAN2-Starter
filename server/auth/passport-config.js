@@ -19,7 +19,10 @@ exports.setupPassport = function(passport) {
                 ]
             };
 
-            User.findOne(criteria, function (err, user) {
+            User
+            .findOne(criteria)
+            .populate('profilePicture')
+            .exec(function (err, user) {
                 if (err) {
                     return done(err);
                 }
@@ -61,7 +64,7 @@ exports.setupPassport = function(passport) {
     ));
 
     passport.serializeUser(function(user, done) {
-        done(null, user._id);
+        done(null, user._id.toString());
     });
 
     passport.deserializeUser(function(id, done) {

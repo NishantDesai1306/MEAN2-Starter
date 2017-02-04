@@ -9,7 +9,7 @@ import { NgModule, OpaqueToken }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
-import { DropdownModule } from 'ng2-bootstrap';
+import { DropdownModule, ProgressbarModule, ModalModule } from 'ng2-bootstrap';
 import { AppConfig } from './app-config';
 
 import { LoginModule } from './login/login.module';
@@ -17,6 +17,7 @@ import { LoginModule } from './login/login.module';
 import { AppComponent }  from './app.component';
 import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home/home.component';
+import { NgUploaderModule } from 'ngx-uploader';
 
 @NgModule({
   imports: [ 
@@ -27,7 +28,10 @@ import { HomeComponent } from './home/home.component';
     LoginModule,
     SharedModule,
     FormsModule,
-    DropdownModule.forRoot()
+    DropdownModule.forRoot(),
+    ProgressbarModule.forRoot(),
+    ModalModule.forRoot(),
+    NgUploaderModule
   ],
   declarations: [ 
     AppComponent,

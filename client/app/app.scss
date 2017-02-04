@@ -13,3 +13,8 @@ h1 {
 .cursor-pointer {
     cursor: pointer;
 }
+
+.align-content-right {
+    display: flex;
+    justify-content: flex-end;
+}

@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var Q = require('q');
 var bcrypt = require('bcrypt-nodejs');
 var _ = require('lodash');
+var Upload = require('../upload/upload.model');
 // create a schema
 var userSchema = new Schema({
     username: String,
@@ -18,14 +19,22 @@ var userSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    updatedAt: Date
+    updatedAt: Date,
+    profilePicture: {
+        type: Schema.Types.ObjectId, 
+        ref: 'Upload'
+    }
 });
+var DEFAULT_PROFILE_PICTURE = "5895d522fb849c1f5c321fd9";
 
 userSchema.statics = {
     getUserById: function(userId) {
         var userDefer = Q.defer();
 
-        this.findById(userId, function(err, user) {
+        this
+        .findById(userId)
+        .populate('profilePicture')
+        .exec(function(err, user) {
             if(err) {
                 return userDefer.reject(err);
             }
@@ -79,7 +88,8 @@ userSchema.statics = {
             var userModel = new schema({
                 email: email,
                 username: username,
-                password: password
+                password: password,
+                profilePicture: DEFAULT_PROFILE_PICTURE
             });
 
             userModel.save(function(err) {
@@ -150,6 +160,29 @@ userSchema.statics = {
         });
 
         return defer.promise;
+    },
+    changeProfilePicture: function(userId, uploadId) {
+        var changeProfilePictureDefer = Q.defer();
+
+        User.findOneAndUpdate({
+            _id: userId
+        }, {
+            profilePicture: uploadId
+        }, function(err, user) {
+            if(err) {
+                return changeProfilePictureDefer.reject(err);
+            }
+        });
+
+        Upload.findById(uploadId, function(err, upload) {
+            if(err) {
+                return changeProfilePictureDefer.reject(err);
+            }
+
+            return changeProfilePictureDefer.resolve(upload.path);
+        });
+
+        return changeProfilePictureDefer.promise;
     }
 };
 

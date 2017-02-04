@@ -9,7 +9,7 @@ var webpack = require('webpack');
 gulp.task('server', function() {
     nodemon({
         script: './server/server.js',
-        watch: ["server.js"],
+        watch: ["./server"],
         ext: 'js'
     })
     .on('restart', function() {

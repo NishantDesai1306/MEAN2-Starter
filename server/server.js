@@ -1,26 +1,22 @@
 // modules =================================================
 var express        = require('express');
 var app            = express();
-var path = require('path');
-var cookieParser = require('cookie-parser');
+var path           = require('path');
+var cookieParser   = require('cookie-parser');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var morgan = require('morgan');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var session = require('express-session');
-var apiRouter = require('./api');
-var authRouter = require('./auth');
-var salt = require('./config').salt;
+var morgan         = require('morgan');
+var mongoose       = require('mongoose');
+var passport       = require('passport');
+var session        = require('express-session');
+var apiRouter      = require('./api');
+var authRouter     = require('./auth');
+var salt           = require('./config').salt;
 //mongoose connect
 mongoose.connect('mongodb://localhost/ng2-starter');
 
 // set our port
 var port = process.env.PORT || 3000; 
-
-// connect to our mongoDB database 
-// (uncomment after you enter in your own credentials in config/db.js)
-// mongoose.connect(db.url); 
 
 app.use(morgan('dev'));
 
@@ -31,6 +27,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(cookieParser());
 
 app.use(express.static(path.resolve('./dist')));
+app.use('/upload', express.static('upload'));
 
 app.use(session({
     secret: salt,

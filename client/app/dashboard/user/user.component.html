@@ -5,7 +5,7 @@
             <div class="center-align">
                 <h2><span class="glyphicon glyphicon-user"></span> User Details</h2>
             </div>
-            
+
             <div class="form-group">
                 <label for="name">Userame</label>
                 <input name="name" [(ngModel)]="user.username" type="name" class="form-control" id="name" placeholder="Username" required>
@@ -15,7 +15,15 @@
                 <label for="email">Email address</label>
                 <input name="email" [(ngModel)]="user.email" type="email" class="form-control" id="email" placeholder="Email" required>
             </div>
-            
+
+            <div class="form-group padding-bottom-10">
+                <label for="profile-picture">Profile Picture ({{user.profilePictureUrl}})</label>
+                <div class="padding-bottom-10">
+                    <img src="{{user.profilePictureUrl}}" alt="profile_picture" height="100" width="100"/>
+                </div>
+                <button type="button" class="btn btn-primary" (click)="uploadProfilePictureModal.show()">Change Profile Picture</button>
+            </div>
+
             <div *ngIf="error" class="alert alert-danger align-center">
                 <span>{{error}}</span>
             </div>
@@ -31,4 +39,36 @@
         </div>
     </div>
     <div class="col-sm-4"></div>
+</div>
+
+<div bsModal #uploadProfilePictureModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="profil-picture-modal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Profile Picture</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="uploadProfilePictureModal.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="profile-picture">Profile Picture</label>
+                <input type="file" class="form-control" id="profile-picture"
+                    ngFileSelect 
+                    [options]="uploaderOptions" 
+                    [events]="inputUploadEvent"
+                    (onUpload)="handleUpload($event)"
+                    (beforeUpload)="beforeUpload($event)">
+                <progressbar *ngIf="!!uploadProgress" [animate]="true" [value]="uploadProgress" type="success"><b>Uploading</b></progressbar>
+            </div>
+
+            <div class="align-content-right">
+                <button class="btn btn-primary" (click)="uploadProfilePicture()">Upload</button>
+            </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
 </div>

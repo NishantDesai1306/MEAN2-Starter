@@ -5,10 +5,12 @@ import { Injectable } from '@angular/core';
 class User {
     private username: string;
     private email: string;
+    private profilePictureUrl: string;
 
-    constructor(username: string, email: string) {
+    constructor(username: string, email: string, profilePicture: string) {
         this.username = username;
         this.email = email;
+        this.profilePictureUrl = profilePicture;
     }
 
     getUsername(): string {
@@ -16,6 +18,9 @@ class User {
     };
     getEmail(): string {
         return this.email || null;
+    }
+    getProfilePictureUrl(): string {
+        return this.profilePictureUrl || null;
     }
 }
 
@@ -25,11 +30,11 @@ export class UserService {
     apiUrl: string = '/api/user';
 
     constructor(private http: Http) {
-        this.userBehaviousSubject = new BehaviorSubject<User>(new User(null, null));
+        this.userBehaviousSubject = new BehaviorSubject<User>(new User(null, null, null));
     }
 
-    setUser(username, email) {
-        this.userBehaviousSubject.next(new User(username, email));
+    setUser(username, email, profilePciture) {
+        this.userBehaviousSubject.next(new User(username, email, profilePciture));
     }
 
     getUser(): Observable<User> {
@@ -47,7 +52,26 @@ export class UserService {
             .map((res:Response) => res.json())
             .map((res) => {
                 if(res.status) {
-                    self.setUser(res.data.username, res.data.email);
+                    self.getUser().subscribe((user) => {
+                        self.setUser(res.data.username, res.data.email, user.getProfilePictureUrl());
+                    });
+                }
+                return res;
+            })
+            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    changeProfilePicture(uploadId) {
+        let self = this;
+        let changeProfilePictureUrl: string = this.apiUrl + '/change-profile-picture';
+
+        return self.http.post(changeProfilePictureUrl, {profilePicture: uploadId})
+            .map((res:Response) => res.json())
+            .map((res) => {
+                if(res.status) {
+                    self.getUser().subscribe((user) => {
+                        self.setUser(user.getUsername(), user.getEmail(), res.data.profilePictureUrl);
+                    });
                 }
                 return res;
             })

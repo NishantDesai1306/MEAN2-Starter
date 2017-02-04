@@ -35,7 +35,7 @@ export class AuthSerivce {
             .map((res) => {
                 self.isLoggedIn = res.status;
                 if(self.isLoggedIn) {
-                    self.userService.setUser(res.username, res.email)
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
                 }
                 if(rememberMe) {
                     self.cookieService.put(self.appConfig.COOKIE_KEY, "user-logged-in", {
@@ -56,7 +56,7 @@ export class AuthSerivce {
             .map((res) => {
                 self.isLoggedIn = res.status;
                 if(self.isLoggedIn) {
-                    self.userService.setUser(res.username, res.email)
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
                 }
                 return self.isLoggedIn;
             })
@@ -72,7 +72,7 @@ export class AuthSerivce {
             .map((res) => {
                 if(res.status) {
                     self.isLoggedIn = false;
-                    self.userService.setUser(res.username, res.email);
+                    self.userService.setUser(null, null ,null);
                     self.cookieService.remove(self.appConfig.COOKIE_KEY);
                 }
                 
@@ -90,7 +90,7 @@ export class AuthSerivce {
             .map((res) => {
                 if(res.status) {
                     self.isLoggedIn = true;
-                    self.userService.setUser(res.username, res.email);
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
                 }
                 
                 return res.status;

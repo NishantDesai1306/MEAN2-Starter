@@ -3,11 +3,11 @@
         <div class="navbar-header">
             <a class="navbar-brand" [routerLink]="['/home']">Angular2 Started</a>
         </div>
-        <ul class="nav navbar-nav navbar-right" *ngIf="username">
+        <ul class="nav navbar-nav navbar-right" *ngIf="user.getUsername()">
             <li><a [routerLink]="['/dashboard']">Dashboard</a></li>
             <li dropdown>
                 <a class="cursor-pointer" id="user-menu" dropdownToggle>
-                    <span class="glyphicon glyphicon-user"></span>&nbsp; Welcome, {{username}}
+                    <img src="{{user.getProfilePictureUrl()}}" height="25" width="25">&nbsp; Welcome, {{user.getUsername()}}
                     <span class="caret"></span>
                 </a>
                 <ul dropdownMenu role="menu" aria-labelledby="user-menu">

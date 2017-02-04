@@ -9,18 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-    username: string;
+    user: any;
     
-    constructor(private userService: UserService, private authService: AuthSerivce, private router: Router) {
-        this.username = '';
-    }
-
-    ngOnInit() {
-        var self = this;
-        self.userService.getUser().subscribe(function(newUser) {
-            self.username = newUser.getUsername();
-        });
-    }
+    constructor(private userService: UserService, private authService: AuthSerivce, private router: Router) {}
 
     logout() {
         var self = this;
@@ -37,4 +28,13 @@ export class AppComponent implements OnInit {
              console.error(err);
          });  
     }
+
+    ngOnInit() {
+        var self = this;
+        self.userService.getUser().subscribe(function(newUser) {
+            console.log('here', newUser);
+            self.user = newUser;
+        });
+    }
+    
  }

@@ -1,42 +1,102 @@
-import { UserService } from './../../shared/user.service';
-import { Component, OnInit } from '@angular/core';
+import {UserService} from './../../shared/user.service';
+import {Component, OnInit, NgZone, Inject, EventEmitter, ViewChild} from '@angular/core';
+import {NgUploaderOptions, UploadedFile, NgUploaderService} from 'ngx-uploader';
+import { ModalDirective } from 'ng2-bootstrap';
 
-@Component({
-    templateUrl: './user.component.html'
-})
+@Component({templateUrl: './user.component.html'})
 export class UserComponent implements OnInit {
 
-    user: any;
-    error: string = '';
+    user : any;
+    error : string = '';
+    
+    inputUploadEvent: EventEmitter<string>;
+    uploaderOptions : NgUploaderOptions;
+    uploadProgress: number;
+    sizeLimit: number = 5*1024*1024;
+    uploadPromise: Promise<string>;
 
-    constructor(private userService: UserService) {}
+    loading: boolean = false;
+
+    @ViewChild('uploadProfilePictureModal') public uploadProfilePictureModal:ModalDirective;
+
+    constructor(
+        private userService : UserService, 
+        @Inject(NgZone)private zone : NgZone
+    ) {
+        this.uploaderOptions = new NgUploaderOptions({
+            url: '/api/upload',
+            filterExtensions: true,
+            allowedExtensions: ['jpg', 'png'],
+            autoUpload: false,
+            maxUploads: 1
+        });
+
+        this.uploadPromise = Promise.resolve("");
+        this.inputUploadEvent = new EventEmitter<string>();
+    }
 
     saveChanges() {
         var self = this;
+        
         self.error = '';
-        if(!self.user.username) {
+    
+        if (!self.user.username) {
             return self.error = 'Username can`t be empty';
         }
-        if(!self.user.email) {
+        if (!self.user.email) {
             return self.error = 'Email can`t be empty';
         }
-
+        
         self.userService
             .changeDetails(self.user.username, self.user.email)
             .subscribe(res => {
-                if(res.status) {
-
-                }
-                else {
+                if (res.status) {
+                    self.loading = false;
+                } else {
                     this.error = res.reason;
                 }
             });
     }
 
+    handleUpload(data : any) {
+        var self = this;
+        setTimeout(() => {
+            this.zone
+                .run(() => {
+                    self.uploadProgress = data.progress.percent;
+                    if (data && data.response && !self.loading) {
+                        var serverResponse = JSON.parse(data.response);
+                        if(serverResponse.status) {
+                            self.userService.changeProfilePicture(serverResponse.data).subscribe(()=>{});
+                        }
+                        else {
+                            console.error(serverResponse.reason);
+                        }
+                        
+                        self.uploadProfilePictureModal.hide();
+                    }
+                });
+        });
+    }
+
+    beforeUpload(uploadingFile: UploadedFile): void {
+        if (uploadingFile.size > this.sizeLimit) {
+            uploadingFile.setAbort();
+            this.error = 'Can\'t upload file with size more than 5MB';
+        }
+    }
+
+    uploadProfilePicture() {
+        this.inputUploadEvent.emit('startUpload');
+    }
+
     ngOnInit() {
         var self = this;
-        self.userService.getUser().subscribe(user => {
-            self.user = user;
-        });
-     }
+        self
+            .userService
+            .getUser()
+            .subscribe(user => {
+                self.user = user;
+            });
+    }
 }
