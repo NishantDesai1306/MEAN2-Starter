@@ -2,6 +2,9 @@ import { Http, Response } from '@angular/http';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
 
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+
 class User {
     private username: string;
     private email: string;
@@ -34,13 +37,15 @@ export class UserService {
     }
 
     setUser(username, email, profilePciture) {
-        this.userBehaviousSubject.next(new User(username, email, profilePciture));
+        let user:User = new User(username, email, profilePciture);
+        this.userBehaviousSubject.next(user);
     }
 
     getUser(): Observable<User> {
         return this
             .userBehaviousSubject
             .asObservable()
+            .share()
             .distinctUntilChanged();
     };
 
@@ -52,9 +57,7 @@ export class UserService {
             .map((res:Response) => res.json())
             .map((res) => {
                 if(res.status) {
-                    self.getUser().subscribe((user) => {
-                        self.setUser(res.data.username, res.data.email, user.getProfilePictureUrl());
-                    });
+                    self.setUser(res.data.username, res.data.email, res.data.profilePictureUrl);
                 }
                 return res;
             })
@@ -66,16 +69,16 @@ export class UserService {
         let changeProfilePictureUrl: string = this.apiUrl + '/change-profile-picture';
 
         return self.http.post(changeProfilePictureUrl, {profilePicture: uploadId})
-            .map((res:Response) => res.json())
+            .map((res:Response) => {
+                return res.json();
+            })
             .map((res) => {
-                if(res.status) {
-                    self.getUser().subscribe((user) => {
-                        self.setUser(user.getUsername(), user.getEmail(), res.data.profilePictureUrl);
-                    });
+                if(res && res.status) {
+                    self.setUser(res.data.username, res.data.email, res.data.profilePictureUrl);
                 }
                 return res;
             })
-            .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+            .catch((error:any) => Observable.throw(error || 'Server error'));
     }
 
     changePassword(oldPassword, newPassword) {

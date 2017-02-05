@@ -113,13 +113,27 @@ userSchema.statics = {
             return self.getUserById(userId);
         })
         .then(function(user) {
+            var userDefer = Q.defer();
+
             user.email = newDetails.email;
             user.username = newDetails.username;
             user.save(function(err) {
                 if(err) {
+                    userDefer.reject(err);
                     return defer.reject(err);
                 }
-                defer.resolve(user);
+                userDefer.resolve(user);
+            });
+
+            return userDefer.promise;
+        })
+        .then(function(user) {
+            user.getUpload().then(function(upload) {
+                return defer.resolve({
+                    username: user.username,
+                    email: user.email,
+                    profilePictureUrl: upload.path
+                });
             });
         })
         .catch(function(err) {
@@ -163,26 +177,53 @@ userSchema.statics = {
     },
     changeProfilePicture: function(userId, uploadId) {
         var changeProfilePictureDefer = Q.defer();
+        var chain = Q.when();
 
-        User.findOneAndUpdate({
-            _id: userId
-        }, {
-            profilePicture: uploadId
-        }, function(err, user) {
-            if(err) {
-                return changeProfilePictureDefer.reject(err);
-            }
-        });
+        chain
+        .then(function() {
+            var userDefer = Q.defer();
 
-        Upload.findById(uploadId, function(err, upload) {
-            if(err) {
-                return changeProfilePictureDefer.reject(err);
-            }
+            User.findOneAndUpdate({
+                _id: userId
+            }, {
+                profilePicture: uploadId
+            }, function(err, user) {
+                if(err) {
+                    userDefer.reject(err);
+                    return changeProfilePictureDefer.reject(err);
+                }
+                userDefer.resolve(user);
+            });
 
-            return changeProfilePictureDefer.resolve(upload.path);
+            return userDefer.promise;
+        })
+        .then(function(user) {
+            user.getUpload().then(function(upload) {
+                return changeProfilePictureDefer.resolve({
+                    username: user.username,
+                    email: user.email,
+                    profilePictureUrl: upload.path
+                });
+            });
         });
 
         return changeProfilePictureDefer.promise;
+    }
+};
+
+userSchema.methods = {
+    getUpload: function() {
+        var uploadDefer = Q.defer();
+
+        Upload.findById(this.profilePicture, function(err, upload) {
+            if(err) {
+                return uploadDefer.reject(err);
+            }
+
+            return uploadDefer.resolve(upload);
+        });
+
+        return uploadDefer.promise;
     }
 };
 

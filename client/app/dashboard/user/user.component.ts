@@ -1,7 +1,9 @@
-import {UserService} from './../../shared/user.service';
 import {Component, OnInit, NgZone, Inject, EventEmitter, ViewChild} from '@angular/core';
+import { Router } from '@angular/router';
 import {NgUploaderOptions, UploadedFile, NgUploaderService} from 'ngx-uploader';
 import { ModalDirective } from 'ng2-bootstrap';
+
+import {UserService} from './../../shared/user.service';
 
 @Component({templateUrl: './user.component.html'})
 export class UserComponent implements OnInit {
@@ -21,7 +23,8 @@ export class UserComponent implements OnInit {
 
     constructor(
         private userService : UserService, 
-        @Inject(NgZone)private zone : NgZone
+        @Inject(NgZone)private zone : NgZone,
+        private router : Router
     ) {
         this.uploaderOptions = new NgUploaderOptions({
             url: '/api/upload',
@@ -52,6 +55,7 @@ export class UserComponent implements OnInit {
             .subscribe(res => {
                 if (res.status) {
                     self.loading = false;
+                    self.router.navigateByUrl('/dashboard');
                 } else {
                     this.error = res.reason;
                 }
@@ -66,6 +70,7 @@ export class UserComponent implements OnInit {
                     self.uploadProgress = data.progress.percent;
                     if (data && data.response && !self.loading) {
                         var serverResponse = JSON.parse(data.response);
+                        self.uploadProgress = 0;
                         if(serverResponse.status) {
                             self.userService.changeProfilePicture(serverResponse.data).subscribe(()=>{});
                         }
@@ -96,7 +101,7 @@ export class UserComponent implements OnInit {
             .userService
             .getUser()
             .subscribe(user => {
-                self.user = user;
+                self.user = Object.assign({}, user);
             });
     }
 }

@@ -32,7 +32,6 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         var self = this;
         self.userService.getUser().subscribe(function(newUser) {
-            console.log('here', newUser);
             self.user = newUser;
         });
     }

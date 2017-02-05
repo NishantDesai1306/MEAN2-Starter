@@ -19,7 +19,8 @@ exports.changeDetails = function(req, res) {
                 status: true,
                 data: {
                     username: newUser.username,
-                    email: newUser.email
+                    email: newUser.email,
+                    profilePictureUrl: newUser.profilePictureUrl
                 }
             });
         }, function(err) {
@@ -46,10 +47,14 @@ exports.changePassword = function(req, res) {
 
 exports.changeProfilePicture = function(req, res) {
     User.changeProfilePicture(req.user, req.body.profilePicture)
-        .then(function(newUrl) {
+        .then(function(newUser) {
             res.json({
                 status: true,
-                profilePictureUrl: newUrl
+                data: {
+                    username: newUser.username,
+                    email: newUser.email,
+                    profilePictureUrl: newUser.profilePictureUrl
+                }
             });
         }, function(err) {
             res.json({
