@@ -25,7 +25,10 @@ var userSchema = new Schema({
         ref: 'Upload'
     }
 });
-var DEFAULT_PROFILE_PICTURE = "5895d522fb849c1f5c321fd9";
+var DEFAULT_PROFILE_PICTURE = {
+    _id: null,
+    path: null
+};
 
 userSchema.statics = {
     getUserById: function(userId) {
@@ -83,20 +86,47 @@ userSchema.statics = {
         var schema = this;
 
         this.isUserUnique(email, username)
-        .then(function() {
+        .then(function()  {
+            var profilePictureDefer = Q.defer();
+
+            if(DEFAULT_PROFILE_PICTURE._id) {
+                return profilePictureDefer.resolve(DEFAULT_PROFILE_PICTURE);
+            }
+
+            Upload.findOne({name: 'dummy_user.png'}, function(err, upload) {
+                if(err) {
+                    return profilePictureDefer.reject(err);
+                }
+
+                DEFAULT_PROFILE_PICTURE._id = upload._id.toString();
+                DEFAULT_PROFILE_PICTURE.path = upload.path;
+                return profilePictureDefer.resolve(DEFAULT_PROFILE_PICTURE);
+            });
+
+            return profilePictureDefer.promise;
+        })
+        .then(function(dummyProfilePciture) {
             password = bcrypt.hashSync(password);
             var userModel = new schema({
                 email: email,
                 username: username,
                 password: password,
-                profilePicture: DEFAULT_PROFILE_PICTURE
+                profilePicture: dummyProfilePciture._id
             });
 
             userModel.save(function(err) {
                 if(err) {
                     return createUserDefer.reject(err);
                 }
-                createUserDefer.resolve(userModel);
+
+                //passport's serialize-deserialize is called after successRegister of auth.controller 
+                //so profilePicture needs to be set here
+                createUserDefer.resolve({
+                    _id: userModel._id,
+                    email: userModel.email,
+                    username: userModel.username,
+                    profilePicture: dummyProfilePciture
+                });
             });
         }, function(err) {
             createUserDefer.reject(err);

@@ -12,6 +12,8 @@ var session        = require('express-session');
 var apiRouter      = require('./api');
 var authRouter     = require('./auth');
 var salt           = require('./config').salt;
+var fs             = require('fs');
+
 //mongoose connect
 mongoose.connect('mongodb://localhost/ng2-starter');
 
@@ -51,5 +53,31 @@ app.listen(port);
 // shoutout to the user                     
 console.log('Magic happens on port ' + port);
 
+
+var Upload = require('./api/upload/upload.model');
+
+Upload.findOne({}, function(err, upload) {
+    if(err) {
+        console.error(err.toString());
+    }
+
+    if(!upload) { //no uplad exists
+        var srcPath = './image/dummy_user.png';
+        var targetPath = path.resolve('./upload', 'dummy_user.png');
+
+        fs.link(srcPath, targetPath, function (err) {
+            if (err) {
+                return console.error(err.toString());
+            }
+            
+            targetPath = targetPath.substring(targetPath.indexOf('upload'));
+            Upload.createUpload(targetPath).then(function(upload) {
+                console.log('dummy user image uplaoded');
+            }, function(err) {
+                console.error(err.toString());
+            });
+        });
+    }
+});
 // expose app           
 exports = module.exports = app;        
