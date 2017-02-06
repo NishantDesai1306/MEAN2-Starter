@@ -54,30 +54,29 @@ app.listen(port);
 console.log('Magic happens on port ' + port);
 
 
-var Upload = require('./api/upload/upload.model');
+//insert dummy_user profile picture
+var uploadFolder = process.env.UPLOAD_PATH;
+if(!fs.existsSync(uploadFolder)) {
+    fs.mkdir(uploadFolder)    ;
+}
 
-Upload.findOne({}, function(err, upload) {
-    if(err) {
-        console.error(err.toString());
-    }
+if(!fs.readdirSync(uploadFolder).length) {
+    var Upload = require('./api/upload/upload.model');
+    var srcPath = './image/dummy_user.png';
+    var targetPath = path.resolve(uploadFolder, 'dummy_user.png');
 
-    if(!upload) { //no uplad exists
-        var srcPath = './image/dummy_user.png';
-        var targetPath = path.resolve('./upload', 'dummy_user.png');
-
-        fs.link(srcPath, targetPath, function (err) {
-            if (err) {
-                return console.error(err.toString());
-            }
-            
-            targetPath = targetPath.substring(targetPath.indexOf('upload'));
-            Upload.createUpload(targetPath).then(function(upload) {
-                console.log('dummy user image uplaoded');
-            }, function(err) {
-                console.error(err.toString());
-            });
+    fs.link(srcPath, targetPath, function (err) {
+        if (err) {
+            return console.error(err.toString());
+        }
+        
+        targetPath = targetPath.substring(targetPath.indexOf('upload'));
+        Upload.createUpload(targetPath)
+        .catch(function(err) {
+            console.error(err.toString());
         });
-    }
-});
+    });
+}
+
 // expose app           
 exports = module.exports = app;        
