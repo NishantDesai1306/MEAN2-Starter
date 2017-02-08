@@ -7,7 +7,7 @@ exports.fetchUser = function(req, res) {
         data: {
             username: req.user.username,
             email: req.user.email,
-            profilePicture: req.user.profilePicture.path
+            profilePictureUrl: req.user.profilePicture.path
         }
     });
 };

@@ -213,16 +213,20 @@ userSchema.statics = {
         .then(function() {
             var userDefer = Q.defer();
 
-            User.findOneAndUpdate({
-                _id: userId
-            }, {
-                profilePicture: uploadId
-            }, function(err, user) {
+            User.findOne({ _id: userId }, function(err, user) {
                 if(err) {
                     userDefer.reject(err);
                     return changeProfilePictureDefer.reject(err);
                 }
-                userDefer.resolve(user);
+                
+                user.profilePicture = uploadId;
+                user.save(function(err) {
+                    if(err) {
+                        userDefer.reject(err);
+                        return changeProfilePictureDefer.reject(err);
+                    }
+                    userDefer.resolve(user);
+                });
             });
 
             return userDefer.promise;

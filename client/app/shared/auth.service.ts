@@ -1,5 +1,3 @@
-import { CookieService } from 'angular2-cookie';
-import { AppConfig } from './../app-config';
 import { UserService } from './user.service';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
@@ -18,9 +16,7 @@ export class AuthSerivce {
     private isLoggedIn: boolean = false;
     
     constructor(private http: Http, 
-        private userService: UserService, 
-        private cookieService: CookieService,
-        private appConfig: AppConfig) {}
+        private userService: UserService) {}
 
     isUserLoggedIn(): boolean {
         return this.isLoggedIn;
@@ -30,17 +26,12 @@ export class AuthSerivce {
         let self = this;
         let loginUrl: string = this.authUrl + '/login';
 
-        return self.http.post(loginUrl, {email, password})
+        return self.http.post(loginUrl, {email, password, rememberMe})
             .map((res:Response) => res.json())
             .map((res) => {
                 self.isLoggedIn = res.status;
                 if(self.isLoggedIn) {
-                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
-                }
-                if(rememberMe) {
-                    self.cookieService.put(self.appConfig.COOKIE_KEY, "user-logged-in", {
-                        expires: new Date(Date.now() + self.appConfig.COOKIE_TTL)
-                    });
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePictureUrl);
                 }
                 return self.isLoggedIn;
             })
@@ -56,7 +47,7 @@ export class AuthSerivce {
             .map((res) => {
                 self.isLoggedIn = res.status;
                 if(self.isLoggedIn) {
-                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePictureUrl);
                 }
                 return self.isLoggedIn;
             })
@@ -73,7 +64,6 @@ export class AuthSerivce {
                 if(res.status) {
                     self.isLoggedIn = false;
                     self.userService.setUser(null, null ,null);
-                    self.cookieService.remove(self.appConfig.COOKIE_KEY);
                 }
                 
                 return res;
@@ -90,7 +80,7 @@ export class AuthSerivce {
             .map((res) => {
                 if(res.status) {
                     self.isLoggedIn = true;
-                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePicture);
+                    self.userService.setUser(res.data.username, res.data.email, res.data.profilePictureUrl);
                 }
                 
                 return res.status;

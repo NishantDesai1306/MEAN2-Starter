@@ -17,7 +17,7 @@ var isAuthenticated = function(req, res, next) {
 exports.isAuthenticated = isAuthenticated;
 
 
-router.post('/login', passport.authenticate('local'), controller.successLogin);
+router.post('/login', passport.authenticate('local'), controller.checkRememberMe, controller.successLogin);
 router.post('/register', passport.authenticate('local-signup'), controller.successRegister);
 router.post('/logout', isAuthenticated, controller.logout);
 

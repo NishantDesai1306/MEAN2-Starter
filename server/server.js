@@ -15,7 +15,7 @@ var salt           = require('./config').salt;
 var fs             = require('fs');
 
 //mongoose connect
-mongoose.connect('mongodb://localhost/ng2-starter');
+mongoose.connect('mongodb://localhost/mean2-starter');
 
 // set our port
 var port = process.env.PORT || 3000; 
@@ -39,12 +39,14 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(passport.authenticate('remember-me'));
 
 app.use('/auth', authRouter.router);
 app.use('/api', authRouter.isAuthenticated, apiRouter);
 app.get('*', function(req, res, next) {
     res.sendFile(path.resolve('./dist/index.html'));
 });
+
 
 // start app ===============================================
 // startup our app at http://localhost:8080
@@ -53,11 +55,11 @@ app.listen(port);
 // shoutout to the user                     
 console.log('Magic happens on port ' + port);
 
-
 //insert dummy_user profile picture
 var uploadFolder = process.env.UPLOAD_PATH;
 if(!fs.existsSync(uploadFolder)) {
-    fs.mkdir(uploadFolder)    ;
+    console.log('creating upload directory');
+    fs.mkdirSync(uploadFolder);
 }
 
 if(!fs.readdirSync(uploadFolder).length) {

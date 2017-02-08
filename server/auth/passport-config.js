@@ -1,6 +1,8 @@
 var bcrypt = require('bcrypt-nodejs');
 var LocalStrategy = require('passport-local').Strategy;
+var RememberMeStrategy = require('passport-remember-me').Strategy;
 var User = require('../api/user/user.model');
+var Token = require('./token/token.model');
 
 exports.setupPassport = function(passport) {
     
@@ -61,6 +63,38 @@ exports.setupPassport = function(passport) {
             done(err);
         });
     }
+    ));
+
+    var issueToken = function(user, done) {
+        Token.issueToken(user._id.toString())
+        .then(function(tokenObj) {
+            done(null, tokenObj.token);
+        }, function(err) {
+            done(err);
+        });
+    };
+    passport.use(new RememberMeStrategy(
+        function(token, done) {
+            Token.consumeToken(token)
+                 .then(function(userId) {
+                    if (!userId) { 
+                        return done(null, false); 
+                    }
+
+                    User.getUserById(userId.toString())
+                        .then(function(user) {
+                            if (!user) { 
+                                return done(null, false); 
+                            }
+                            return done(null, user);
+                        }, function(err) {
+                            done(err);
+                        });
+                }, function(err) {
+                    done(err);
+                });
+        },
+        issueToken
     ));
 
     passport.serializeUser(function(user, done) {

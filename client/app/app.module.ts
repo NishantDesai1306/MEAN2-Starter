@@ -10,7 +10,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { DropdownModule, ProgressbarModule, ModalModule } from 'ng2-bootstrap';
-import { AppConfig } from './app-config';
 
 import { LoginModule } from './login/login.module';
 
@@ -42,8 +41,7 @@ import { NgUploaderModule } from 'ngx-uploader';
     ChangePasswordComponent
   ],
   providers: [
-    DashboardCanActivateGuard,
-    AppConfig
+    DashboardCanActivateGuard
   ],
   bootstrap:    [ AppComponent ]
 })

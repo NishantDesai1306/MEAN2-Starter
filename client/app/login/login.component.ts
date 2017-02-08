@@ -1,5 +1,3 @@
-import { CookieService } from 'angular2-cookie';
-import { AppConfig } from './../app-config';
 import {AuthSerivce} from './../shared/auth.service';
 
 import {Component, OnInit} from '@angular/core';
@@ -17,9 +15,7 @@ export class LoginComponent implements OnInit {
     constructor(
         private authService : AuthSerivce, 
         private router : Router, 
-        private route : ActivatedRoute,
-        private cookieService: CookieService,
-        private appConfig: AppConfig) {}
+        private route : ActivatedRoute) {}
 
     login() {
         let self = this;
@@ -49,18 +45,16 @@ export class LoginComponent implements OnInit {
     ngOnInit() {
         var self = this;
 
-        if(self.cookieService.get(self.appConfig.COOKIE_KEY)) {
-            self.authService.getUserDetails().subscribe(isSuccessfull => {
-                if(isSuccessfull) {
-                    self.router.navigateByUrl('/dashboard');
-                }
-            });
-        }
-
         self.route
             .queryParams
             .subscribe(params => {
                 self.error = params['errorMessage'] || '';
             });
+
+        self.authService.getUserDetails().subscribe(isSuccessfull => {
+            if(isSuccessfull) {
+                self.router.navigateByUrl('/dashboard');
+            }
+        });
     }
 }
