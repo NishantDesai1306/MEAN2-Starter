@@ -1,6 +1,5 @@
 <div class="row margin-top-50">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4 container panel panel-default">
+    <div class="col-sm-6 col-sm-offset-3 container panel panel-default">
         <div class="panel-body">
             <div class="center-align">
                 <h2><span class="glyphicon glyphicon-user"></span> User Details</h2>
@@ -21,7 +20,7 @@
                 <div class="padding-bottom-10">
                     <img src="{{user.profilePictureUrl}}" alt="profile_picture" height="100" width="100"/>
                 </div>
-                <button type="button" class="btn btn-primary" (click)="uploadProfilePictureModal.show()">Change Profile Picture</button>
+                <button type="button" class="btn btn-primary" (click)="showProfilePictureModal()">Change Profile Picture</button>
             </div>
 
             <div *ngIf="error" class="alert alert-danger align-center">
@@ -29,20 +28,19 @@
             </div>
 
             <div class="row padding-bottom-10">
-                <div class="col-sm-6">
+                <div class="col-sm-12 col-md-6">
                     <button class="btn btn-primary btn-lg btn-block" (click)="saveChanges()">Save Changes</button>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-12 col-md-6">
                     <a class="btn btn-danger btn-lg btn-block" [routerLink]="['/dashboard/change-password']">Change Password</a>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-sm-4"></div>
 </div>
 
 <div bsModal #uploadProfilePictureModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="profil-picture-modal" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title pull-left">Profile Picture</h4>
@@ -51,16 +49,22 @@
         </button>
       </div>
       <div class="modal-body">
+        <div class="align-center padding-bottom-10" *ngIf="!!previewData">
+            <img class="preview-image img-rounded" [src]="previewData">
+        </div>
         <form enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="profile-picture">Profile Picture</label>
-                <input type="file" class="form-control" id="profile-picture"
-                    ngFileSelect 
-                    [options]="uploaderOptions" 
-                    [events]="inputUploadEvent"
-                    (onUpload)="handleUpload($event)"
-                    (beforeUpload)="beforeUpload($event)">
-                <progressbar *ngIf="!!uploadProgress" [animate]="true" [value]="uploadProgress" type="success"><b>Uploading</b></progressbar>
+            <div class="form-group padding-bottom-10">
+                <label for="profile-picture" class="btn btn-block btn-lg btn-primary">
+                    <input type="file" class="hidden" id="profile-picture"
+                        ngFileSelect 
+                        [options]="uploaderOptions" 
+                        [events]="inputUploadEvent"
+                        (onUpload)="handleUpload($event)"
+                        (beforeUpload)="beforeUpload($event)"
+                        (onPreviewData)="handlePreviewData($event)">
+                    <progressbar *ngIf="!!uploadProgress" [animate]="true" [value]="uploadProgress" type="success"><b>Uploading</b></progressbar>
+                    Select Profile Picture
+                </label>
             </div>
 
             <div class="align-content-right">

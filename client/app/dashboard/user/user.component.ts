@@ -9,6 +9,7 @@ import {UserService} from './../../shared/user.service';
 export class UserComponent implements OnInit {
 
     user : any;
+    previewData: any;
     error : string = '';
     
     inputUploadEvent: EventEmitter<string>;
@@ -26,14 +27,6 @@ export class UserComponent implements OnInit {
         @Inject(NgZone)private zone : NgZone,
         private router : Router
     ) {
-        this.uploaderOptions = new NgUploaderOptions({
-            url: '/api/upload',
-            filterExtensions: true,
-            allowedExtensions: ['jpg', 'png'],
-            autoUpload: false,
-            maxUploads: 1
-        });
-
         this.uploadPromise = Promise.resolve("");
         this.inputUploadEvent = new EventEmitter<string>();
     }
@@ -93,6 +86,23 @@ export class UserComponent implements OnInit {
 
     uploadProfilePicture() {
         this.inputUploadEvent.emit('startUpload');
+    }
+
+    handlePreviewData(data: any) {
+        this.previewData = data;
+    }
+
+    showProfilePictureModal() {
+        this.previewData = null;
+        this.uploaderOptions = new NgUploaderOptions({
+            url: '/api/upload',
+            filterExtensions: true,
+            allowedExtensions: ['jpeg', 'jpg', 'png'],
+            autoUpload: false,
+            maxUploads: 1,
+            previewUrl: true,
+        });
+        this.uploadProfilePictureModal.show()
     }
 
     ngOnInit() {
