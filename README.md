@@ -22,6 +22,9 @@ Setup this project
 5. Open [localhost:3000](https://localhost:3000)
 
 ![ ](https://github.com/NishantDesai1306/MEAN2-Starter/blob/master/image/demo.png)
+![ ](https://github.com/NishantDesai1306/MEAN2-Starter/blob/master/image/login.png)
+![ ](https://github.com/NishantDesai1306/MEAN2-Starter/blob/master/image/user-details.png)
+![ ](https://github.com/NishantDesai1306/MEAN2-Starter/blob/master/image/profile-picture.png)
 
 ---
 
