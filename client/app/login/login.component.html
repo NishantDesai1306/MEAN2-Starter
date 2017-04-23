@@ -1,38 +1,33 @@
-<div class="row margin-top-50">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4 container panel panel-default">
-        <div class="panel-body">
-            <div class="center-align">
-                <h2>Login</h2>
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input name="email" [(ngModel)]="user.email" type="email" class="form-control" id="email" placeholder="Email">
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input name="password" [(ngModel)]="user.password" type="password" class="form-control" id="password" placeholder="Password">
-            </div>
-
-            <div class="checkbox">
-                <label><input type="checkbox" [(ngModel)]="rememberMe"><b>Remember Me</b></label>
-            </div>
-
-            <div *ngIf="error" class="alert alert-danger align-center">
-                <span>{{error}}</span>
-            </div>
-
-            <div class="row padding-bottom-10">
-                <div class="col-sm-6">
-                    <button class="btn btn-primary btn-lg btn-block" (click)="login()">Login</button>
+<div fxLayout="row" class="margin-top-50">
+    <div fxFlex.gt-sm="50%" fxFlexOffset.gt-sm="25%">
+        <md-card class="indigo-background-color">
+            <md-card-header>
+                <div fxFlex fxLayoutAlign="center center">
+                    <h2 class="white-text-color">Login</h2>
                 </div>
-                <div class="col-sm-6">
-                    <button class="btn btn-default btn-lg btn-block" routerLink="/register">Register</button>
+            </md-card-header>
+            <md-card-content>
+                <div fxLayout="column">
+                    <md-input-container fxFlex class="white-input mt1" hintLabel="{{usernameError}}">
+                        <input mdInput placeholder="Username" [(ngModel)]="user.email">
+                    </md-input-container>
+
+                    <md-input-container fxFlex class="white-input mt1" hintLabel="{{passwordError}}">
+                        <input mdInput placeholder="Password" type="password" [(ngModel)]="user.password">
+                    </md-input-container>
+
+                    <md-slide-toggle [(ngModel)]="rememberMe" class="white-toggle-switch">Remember Me</md-slide-toggle>
+
+                    <div class="mt3" fxFlex="100%">
+                        <div fxFlex="35%" fxFlexOffset="10%">
+                            <button md-raised-button fxFlex (click)="login()">Login</button>
+                        </div>
+                        <div fxFlex="35%" fxFlexOffset="10%">
+                            <button routerLink="/register" md-raised-button fxFlex>Register</button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </md-card-content>
+        </md-card>
     </div>
-    <div class="col-sm-4"></div>
 </div>

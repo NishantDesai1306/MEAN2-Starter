@@ -5,10 +5,14 @@ import { MainComponent } from './dashboard/main/main.component';
 import { DashboardCanActivateGuard } from './app.guards';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from './shared/shared.module';
-import { NgModule, OpaqueToken }      from '@angular/core';
+import { NgModule, OpaqueToken, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from '@angular/material';
+import {FlexLayoutModule} from '@angular/flex-layout';
+
 import { DropdownModule, ProgressbarModule, ModalModule } from 'ng2-bootstrap';
 
 import { LoginModule } from './login/login.module';
@@ -30,7 +34,11 @@ import { NgUploaderModule } from 'ngx-uploader';
     DropdownModule.forRoot(),
     ProgressbarModule.forRoot(),
     ModalModule.forRoot(),
-    NgUploaderModule
+    NgUploaderModule,
+
+    MaterialModule,
+    FlexLayoutModule,
+    BrowserAnimationsModule,
   ],
   declarations: [ 
     AppComponent,
@@ -43,6 +51,7 @@ import { NgUploaderModule } from 'ngx-uploader';
   providers: [
     DashboardCanActivateGuard
   ],
-  bootstrap:    [ AppComponent ]
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }

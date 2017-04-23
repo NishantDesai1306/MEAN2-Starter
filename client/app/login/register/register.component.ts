@@ -13,32 +13,35 @@ export class RegisterComponent implements OnInit {
         confirmPassword: '',
         email: ''
     }
-    error: string = "";
+    emailError = '';
+    usernameError = '';
+    passwordError = '';
 
     constructor(private authServie: AuthSerivce, private router: Router) { }
 
     register() {
         let self = this;
-        self.error = "";
+        
+        self.emailError = !self.user.email ? 'Email can`t be empty' : '';
+        self.usernameError = !self.user.username ? 'Username can`t be empty' : '';
+        self.passwordError = self.user.password !== self.user.confirmPassword ? 'Password and Confirm Password must match' : '';
 
-        if(self.user.password === self.user.confirmPassword) {
-            self.authServie
-            .register(self.user.email, self.user.username, self.user.password)
-            .subscribe((isSuccessfull) => {
-                if(isSuccessfull) {
-                    self.router.navigateByUrl('/dashboard')
-                }
-                else {
-                    console.error('error occurred while login');
-                }
-            }, (err) => {
-                console.log(err);
-                self.error = err;
-            });  
+        if (self.emailError || self.usernameError || self.passwordError) {
+            return;
         }
-        else {
-            self.error = "Password and Confirm Password must match";
-        }
+
+        self.authServie
+        .register(self.user.email, self.user.username, self.user.password)
+        .subscribe((isSuccessfull) => {
+            if(isSuccessfull) {
+                self.router.navigateByUrl('/dashboard')
+            }
+            else {
+                console.error('error occurred while login');
+            }
+        }, (err) => {
+            console.error(err);
+        });
     }
 
     ngOnInit() { }

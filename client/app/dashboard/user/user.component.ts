@@ -4,6 +4,7 @@ import {NgUploaderOptions, UploadedFile, NgUploaderService} from 'ngx-uploader';
 import { ModalDirective } from 'ng2-bootstrap';
 
 import {UserService} from './../../shared/user.service';
+import { NotificationService } from '../../shared/notification.service';
 
 @Component({templateUrl: './user.component.html'})
 export class UserComponent implements OnInit {
@@ -20,19 +21,18 @@ export class UserComponent implements OnInit {
 
     loading: boolean = false;
 
-    @ViewChild('uploadProfilePictureModal') public uploadProfilePictureModal:ModalDirective;
-
     constructor(
         private userService : UserService, 
         @Inject(NgZone)private zone : NgZone,
-        private router : Router
+        private router : Router,
+        private notificationService: NotificationService
     ) {
         this.uploadPromise = Promise.resolve("");
         this.inputUploadEvent = new EventEmitter<string>();
     }
 
     saveChanges() {
-        var self = this;
+        const self = this;
         
         self.error = '';
     
@@ -49,6 +49,7 @@ export class UserComponent implements OnInit {
                 if (res.status) {
                     self.loading = false;
                     self.router.navigateByUrl('/dashboard');
+                    this.notificationService.createSimpleNotification('Changes are saved');
                 } else {
                     this.error = res.reason;
                 }
@@ -56,22 +57,24 @@ export class UserComponent implements OnInit {
     }
 
     handleUpload(data : any) {
-        var self = this;
         setTimeout(() => {
             this.zone
                 .run(() => {
-                    self.uploadProgress = data.progress.percent;
-                    if (data && data.response && !self.loading) {
-                        var serverResponse = JSON.parse(data.response);
-                        self.uploadProgress = 0;
+                    this.uploadProgress = data.progress.percent;
+                    console.log(this.uploadProgress)
+                    
+                    if (data && data.response && !this.loading) {
+                        const serverResponse = JSON.parse(data.response);
+                        this.uploadProgress = 0;
+                    
                         if(serverResponse.status) {
-                            self.userService.changeProfilePicture(serverResponse.data).subscribe(()=>{});
+                            this.userService.changeProfilePicture(serverResponse.data).subscribe(()=>{
+                                this.notificationService.createSimpleNotification('Profile picture changed');                                
+                            });
                         }
                         else {
                             console.error(serverResponse.reason);
                         }
-                        
-                        self.uploadProfilePictureModal.hide();
                     }
                 });
         });
@@ -84,34 +87,26 @@ export class UserComponent implements OnInit {
         }
     }
 
-    uploadProfilePicture() {
-        this.inputUploadEvent.emit('startUpload');
-    }
-
     handlePreviewData(data: any) {
         this.previewData = data;
     }
 
-    showProfilePictureModal() {
-        this.previewData = null;
-        this.uploaderOptions = new NgUploaderOptions({
-            url: '/api/upload',
-            filterExtensions: true,
-            allowedExtensions: ['jpeg', 'jpg', 'png'],
-            autoUpload: false,
-            maxUploads: 1,
-            previewUrl: true,
-        });
-        this.uploadProfilePictureModal.show()
-    }
-
     ngOnInit() {
-        var self = this;
+        const self = this;
         self
             .userService
             .getUser()
             .subscribe(user => {
                 self.user = Object.assign({}, user);
             });
+
+        this.uploaderOptions = new NgUploaderOptions({
+            url: '/api/upload',
+            filterExtensions: true,
+            allowedExtensions: ['jpeg', 'jpg', 'png'],
+            autoUpload: true,
+            maxUploads: 1,
+            previewUrl: true,
+        });
     }
 }

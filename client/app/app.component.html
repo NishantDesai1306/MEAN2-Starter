@@ -1,22 +1,34 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" [routerLink]="['/home']">Angular2 Started</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right" *ngIf="user.getUsername()">
-            <li><a [routerLink]="['/dashboard']">Dashboard</a></li>
-            <li dropdown>
-                <a class="cursor-pointer" id="user-menu" dropdownToggle>
-                    <img src="{{user.getProfilePictureUrl()}}" height="25" width="25">&nbsp; Welcome, {{user.getUsername()}}
-                    <span class="caret"></span>
-                </a>
-                <ul dropdownMenu role="menu" aria-labelledby="user-menu">
-                    <li role="menuitem" [routerLink]="['/dashboard/user']"> <a class="cursor-pointer dropdown-item"><span class="glyphicon glyphicon-user"></span>  User Details</a></li>
-                    <li role="menuitem" (click)="logout()"> <a class="cursor-pointer dropdown-item"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
+<div fxLayout="column" fxFlex>
 
-<router-outlet></router-outlet>
+    <md-toolbar color="primary">
+        <span>
+            <a style="color: white; text-decoration: none;" [routerLink]="['/home']">Angular Material 2</a>
+        </span>
+        <span fxFlex></span>
+
+        <button mdTooltip="Dashboard" routerLink='/dashboard' class="p3" *ngIf="user.getUsername()" md-icon-button>
+            <md-icon>dashboard</md-icon>
+        </button>
+        <button *ngIf="user.getUsername()" md-button [mdMenuTriggerFor]="menu">
+             <md-icon>account_circle</md-icon> &nbsp; {{user.getUsername()}}
+        </button>
+        <md-menu #menu="mdMenu">
+            <button md-menu-item routerLink="/dashboard/user">
+                <md-icon>person</md-icon>
+                <span>User Details</span>
+            </button>
+            <button md-menu-item (click)="logout()">
+                <md-icon>exit_to_app</md-icon>
+                <span>Logout</span>
+            </button>
+        </md-menu>
+    </md-toolbar>
+
+    <div fxFlex="100%" class="mt4 pt2" fxLayout="column" fxLayoutAlign="center stretch">
+        <div class="content" fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex.lt-sm="100%" fxFlex="70%" fxFlexOffset.gt-xs="15%">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>
