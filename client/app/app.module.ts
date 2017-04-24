@@ -13,8 +13,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MaterialModule} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 
-import { DropdownModule, ProgressbarModule, ModalModule } from 'ng2-bootstrap';
-
 import { LoginModule } from './login/login.module';
 
 import { AppComponent }  from './app.component';
@@ -31,9 +29,6 @@ import { NgUploaderModule } from 'ngx-uploader';
     LoginModule,
     SharedModule,
     FormsModule,
-    DropdownModule.forRoot(),
-    ProgressbarModule.forRoot(),
-    ModalModule.forRoot(),
     NgUploaderModule,
 
     MaterialModule,
