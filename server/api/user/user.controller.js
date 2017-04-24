@@ -5,6 +5,7 @@ exports.fetchUser = function(req, res) {
     res.json({
         status: true,
         data: {
+            _id: req.user._id,
             username: req.user.username,
             email: req.user.email,
             profilePictureUrl: req.user.profilePicture.path
@@ -18,6 +19,7 @@ exports.changeDetails = function(req, res) {
             res.json({
                 status: true,
                 data: {
+                    _id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
                     profilePictureUrl: newUser.profilePictureUrl
@@ -51,6 +53,7 @@ exports.changeProfilePicture = function(req, res) {
             res.json({
                 status: true,
                 data: {
+                    _id: newUser._id,
                     username: newUser.username,
                     email: newUser.email,
                     profilePictureUrl: newUser.profilePictureUrl

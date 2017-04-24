@@ -4,24 +4,24 @@ var User = require('../api/user/user.model');
 var Token = require('./token/token.model');
 
 exports.checkRememberMe = function(req, res, next) {
-    if(req.body.rememberMe) {
+    if (req.body.rememberMe) {
         Token.issueToken(req.user._id).then(function(tokenObj) {
-            res.cookie('remember_me', tokenObj.token, { path: '/', httpOnly: true, maxAge: 604800000});
+            res.cookie('remember_me', tokenObj.token, { path: '/', httpOnly: true, maxAge: 604800000 });
             next();
         }, function(err) {
             next(err);
         });
-    }
-    else {
+    } else {
         next();
     }
 };
 
 exports.successLogin = function(req, res) {
 
-    res.json({ 
+    res.json({
         status: true,
         data: {
+            _id: req.user._id,
             username: req.user.username,
             email: req.user.email,
             profilePictureUrl: req.user.profilePicture.path
@@ -30,9 +30,10 @@ exports.successLogin = function(req, res) {
 };
 
 exports.successRegister = function(req, res) {
-    res.json({ 
+    res.json({
         status: true,
         data: {
+            _id: req.user._id,
             username: req.user.username,
             email: req.user.email,
             profilePictureUrl: req.user.profilePicture.path
